@@ -217,8 +217,10 @@
         <input id="memberAge" type="number" min="1" max="120" inputmode="numeric" placeholder="Age">
         <label for="memberRole" data-bn="পদ / দায়িত্ব" data-en="Position / Role">পদ / দায়িত্ব</label>
         <input id="memberRole" type="text" placeholder="সভাপতি / President">
-        <label for="memberPhotoUrl" data-bn="ছবির লিংক (ঐচ্ছিক)" data-en="Photo URL (optional)">ছবির লিংক (ঐচ্ছিক)</label>
-        <input id="memberPhotoUrl" type="url" placeholder="https://...">
+        <label for="memberPhotoFile" data-bn="ছবি আপলোড (ঐচ্ছিক)" data-en="Upload photo (optional)">ছবি আপলোড (ঐচ্ছিক)</label>
+        <input id="memberPhotoFile" type="file" accept="image/*">
+        <img id="memberPhotoPreview" alt="Member photo preview" hidden style="display:none;max-width:140px;max-height:140px;object-fit:cover;border-radius:12px;margin-top:10px">
+        <p class="upload-note" data-bn="মোবাইল বা কম্পিউটার থেকে ছবির ফাইল নির্বাচন করুন।" data-en="Choose an image file from your phone or computer.">মোবাইল বা কম্পিউটার থেকে ছবির ফাইল নির্বাচন করুন।</p>
         <button class="upload-btn" id="addMember" type="button" data-bn="সেভ করুন" data-en="Save Member">সেভ করুন</button>
         <p class="upload-note" data-bn="গুরুত্বপূর্ণ: এই ফর্মের পরিবর্তন আপাতত শুধু আপনার browser-এ প্রিভিউ হবে; স্থায়ীভাবে সবার জন্য প্রকাশ করতে database/backend সংযোগ প্রয়োজন।" data-en="Important: changes here are previewed only in this browser. A database/backend is needed to publish them permanently for everyone.">গুরুত্বপূর্ণ: এই ফর্মের পরিবর্তন আপাতত শুধু আপনার browser-এ প্রিভিউ হবে; স্থায়ীভাবে সবার জন্য প্রকাশ করতে database/backend সংযোগ প্রয়োজন।</p>
       </div>
@@ -425,29 +427,55 @@
     }
     loadMembers();
 
+    document.getElementById("memberPhotoFile").addEventListener("change", function() {
+      const file = this.files && this.files[0];
+      const preview = document.getElementById("memberPhotoPreview");
+      if (!file) { preview.removeAttribute("src"); preview.hidden = true; preview.style.display = "none"; return; }
+      if (!file.type.startsWith("image/")) { alert(currentLanguage === "bn" ? "শুধু ছবির ফাইল নির্বাচন করুন।" : "Please choose an image file."); this.value = ""; return; }
+      if (file.size > 5 * 1024 * 1024) { alert(currentLanguage === "bn" ? "ছবির সাইজ ৫ MB-এর মধ্যে রাখুন।" : "Please choose an image smaller than 5 MB."); this.value = ""; return; }
+      const reader = new FileReader();
+      reader.onload = () => { preview.src = String(reader.result || ""); preview.hidden = false; preview.style.display = "block"; };
+      reader.readAsDataURL(file);
+    });
+
     document.getElementById("addMember").addEventListener("click", async function() {
       const name = document.getElementById("memberName").value.trim();
       const mobile = document.getElementById("memberMobile").value.trim();
       const age = document.getElementById("memberAge").value.trim();
       const role = document.getElementById("memberRole").value.trim();
-      const photoUrl = document.getElementById("memberPhotoUrl").value.trim();
+      const photoFile = document.getElementById("memberPhotoFile").files[0];
       if (!name || !mobile || !age || !role) { alert(currentLanguage === "bn" ? "নাম, মোবাইল নম্বর, বয়স ও পদ পূরণ করুন।" : "Please enter name, mobile number, age and position."); return; }
+      if (photoFile && !photoFile.type.startsWith("image/")) { alert(currentLanguage === "bn" ? "শুধু ছবির ফাইল নির্বাচন করুন।" : "Please choose an image file."); return; }
+      if (photoFile && photoFile.size > 5 * 1024 * 1024) { alert(currentLanguage === "bn" ? "ছবির সাইজ ৫ MB-এর মধ্যে রাখুন।" : "Please choose an image smaller than 5 MB."); return; }
       const adminPin = window.prompt(currentLanguage === "bn" ? "Google Apps Script-এর GALLERY_ADMIN_PIN দিন:" : "Enter the Google Apps Script GALLERY_ADMIN_PIN:");
       if (!adminPin) return;
       const button = this; button.disabled = true;
       const status = document.getElementById("memberLoginStatus");
       try {
+        let photoData = "";
+        if (photoFile) {
+          photoData = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result || ""));
+            reader.onerror = reject;
+            reader.readAsDataURL(photoFile);
+          });
+        }
         await fetch(MEMBER_API_URL, {
           method: "POST", mode: "no-cors",
           headers: {"Content-Type":"text/plain;charset=UTF-8"},
-          body: JSON.stringify({action:"addMember",pin:adminPin,name:name,phone:mobile,age:age,role:role,photoUrl:photoUrl})
+          body: JSON.stringify({action:"addMember",pin:adminPin,name:name,phone:mobile,age:age,role:role,photoData:photoData,photoFileName:photoFile ? photoFile.name : ""})
         });
-        status.textContent = currentLanguage === "bn" ? "তথ্য পাঠানো হয়েছে। Sheets-এ save হলে তালিকা refresh হবে।" : "Submitted. The list will refresh after the data is saved to Sheets.";
+        status.textContent = currentLanguage === "bn" ? "তথ্য পাঠানো হয়েছে। ছবিটি স্থায়ীভাবে সংরক্ষণ করতে Apps Script backend-এ photoData upload support থাকতে হবে।" : "Submitted. The Apps Script backend must support photoData uploads to save the image permanently.";
         document.getElementById("memberName").value = "";
         document.getElementById("memberMobile").value = "";
         document.getElementById("memberAge").value = "";
         document.getElementById("memberRole").value = "";
-        document.getElementById("memberPhotoUrl").value = "";
+        document.getElementById("memberPhotoFile").value = "";
+        const photoPreview = document.getElementById("memberPhotoPreview");
+        photoPreview.removeAttribute("src");
+        photoPreview.hidden = true;
+        photoPreview.style.display = "none";
         window.setTimeout(loadMembers, 2500);
       } catch (error) {
         status.textContent = currentLanguage === "bn" ? "তথ্য পাঠানো যায়নি। URL ও Apps Script deployment পরীক্ষা করুন।" : "Could not submit. Check the URL and Apps Script deployment.";
