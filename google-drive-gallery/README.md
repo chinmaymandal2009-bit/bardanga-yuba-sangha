@@ -11,7 +11,7 @@
 1. Create a Google Drive folder for the gallery and generated PDFs.
 2. Create a Google Spreadsheet with two tabs named exactly `Members` and `Notices`.
 3. Put these headers in row 1:
-   - **Members:** `Created | Name | Phone | Age | Photo URL | PDF URL`
+   - **Members:** `Created | Name | Phone | Age | Role | Photo URL | PDF URL`
    - **Notices:** `Created | Title | Details | Attachment URL | PDF URL`
 4. Open https://script.google.com/ and create a project. Copy `Code.gs` into the editor and save.
 5. In **Project Settings → Script Properties**, add:
@@ -28,7 +28,7 @@
 
 ## Admin POST actions
 Send JSON with `pin` and one of:
-- `addMember`: `name`, `phone`, `age`, optional `photoUrl`
+- `addMember`: `name`, `phone`, `age`, `role`, optional `photoUrl`
 - `editMember`: same fields plus `row`
 - `deleteMember`: `row`
 - `addNotice`: `title`, `details`, optional `fileUrl`
