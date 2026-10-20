@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><radialGradient id="bg"><stop stop-color="#6c071b"/><stop offset="1" stop-color="#16070c"/></radialGradient><linearGradient id="gold" x2="0" y2="1"><stop stop-color="#fff0a8"/><stop offset=".45" stop-color="#ffcf48"/><stop offset="1" stop-color="#b76b08"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<circle cx="256" cy="256" r="247" fill="url(#bg)" stroke="url(#gold)" stroke-width="10"/><circle cx="256" cy="256" r="226" fill="none" stroke="url(#gold)" stroke-width="3"/>
+<g fill="url(#gold)" stroke="#ffe9a0" stroke-width="1.5" filter="url(#glow)"><path d="M256 118 L238 163 L247 163 L247 238 Q226 257 207 234 Q195 219 207 195 Q179 221 193 250 Q211 284 247 268 L247 344 L224 375 L256 361 L288 375 L265 344 L265 268 Q301 284 319 250 Q333 221 305 195 Q317 219 305 234 Q286 257 265 238 L265 163 L274 163 Z"/><path d="M256 352 Q220 377 200 408 Q231 396 256 417 Q281 396 312 408 Q292 377 256 352Z"/><path d="M199 390 Q162 373 142 335 Q172 349 196 365 Q177 329 181 302 Q209 330 213 362Z"/><path d="M313 390 Q350 373 370 335 Q340 349 316 365 Q335 329 331 302 Q303 330 299 362Z"/><circle cx="158" cy="263" r="17"/><circle cx="354" cy="263" r="17"/></g>
+<g fill="none" stroke="url(#gold)" stroke-width="5"><path d="M75 256 Q80 116 256 74 Q432 116 437 256"/><path d="M100 417 Q256 476 412 417"/></g>
+<text x="256" y="59" text-anchor="middle" font-family="Georgia,serif" font-size="25" font-weight="bold" fill="#ffe49a" letter-spacing="1">BARDANGA YUBA SANGHA</text>
+<text x="256" y="99" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="bold" fill="#ffe49a">বারডাঙ্গা যুব সংঘ</text>
+<text x="256" y="447" text-anchor="middle" font-family="Georgia,serif" font-size="16" font-weight="bold" fill="#ffe49a">UNITY • HARMONY • SERVICE</text>
+<text x="256" y="473" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#ffe49a">ঐক্য • সম্প্রীতি • সেবা</text>
+</svg>
