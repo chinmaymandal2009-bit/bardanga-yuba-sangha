@@ -99,6 +99,9 @@
     .upload-panel label { display: block; margin: 10px 0 7px; color: var(--gold-light); font-weight: 700; }
     .upload-panel input, .upload-panel textarea { width: 100%; padding: 11px; border: 1px solid var(--line); border-radius: 10px; color: var(--cream); background: rgba(15,5,12,.65); font: inherit; }
     .upload-panel input[type="file"] { max-width: 100%; }
+    .pin-input-row { display: flex; align-items: stretch; gap: 8px; }
+    .pin-input-row input { flex: 1; min-width: 0; }
+    .pin-toggle { flex: 0 0 auto; margin-top: 0; white-space: nowrap; }
     .upload-btn { margin-top: 12px; border: 0; border-radius: 999px; padding: 11px 18px; color: #25100d; background: linear-gradient(135deg, #ffe8ae, #d9a642); font: inherit; font-weight: 800; cursor: pointer; }
     .upload-note { color: var(--muted); font-size: .88rem; line-height: 1.7; }
     .member-grid, .gallery-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
@@ -190,7 +193,7 @@
       </div>
       <div class="upload-panel">
         <label for="memberPin" data-bn="Secret PIN" data-en="Secret PIN">Secret PIN</label>
-        <input id="memberPin" type="password" inputmode="text" autocomplete="current-password" placeholder="Enter member PIN" aria-describedby="pinHelp">
+        <div class="pin-input-row"><input id="memberPin" type="password" inputmode="text" autocomplete="current-password" placeholder="Enter member PIN" aria-describedby="pinHelp"><button class="upload-btn pin-toggle" id="togglePinVisibility" type="button" aria-pressed="false" aria-label="Show PIN">Show PIN</button></div>
         <p class="upload-note" id="pinHelp" data-bn="PIN-টি index.html-এর MEMBER_SECRET_PIN placeholder-এ বদলাতে হবে। মনে রেখো, এই সাধারণ PIN নিরাপদ authentication নয়; website-এর code দেখে এটি বের করা সম্ভব।" data-en="Replace the MEMBER_SECRET_PIN placeholder in index.html. This simple PIN is not secure authentication; visitors can inspect the website code.">PIN-টি index.html-এর MEMBER_SECRET_PIN placeholder-এ বদলাতে হবে। মনে রেখো, এই সাধারণ PIN নিরাপদ authentication নয়; website-এর code দেখে এটি বের করা সম্ভব।</p>
         <button class="upload-btn" id="memberLoginButton" type="button" data-bn="লগইন করুন" data-en="Log In">লগইন করুন</button>
         <button class="upload-btn" id="memberLogoutButton" type="button" hidden data-bn="লগআউট" data-en="Log Out">লগআউট</button>
@@ -310,6 +313,7 @@
     const memberLoginButton = document.getElementById("memberLoginButton");
     const memberLogoutButton = document.getElementById("memberLogoutButton");
     const memberPinInput = document.getElementById("memberPin");
+    const togglePinVisibility = document.getElementById("togglePinVisibility");
     const memberLoginStatus = document.getElementById("memberLoginStatus");
 
     async function sha256Hex(value) {
@@ -323,10 +327,27 @@
       memberLogoutButton.hidden = !isLoggedIn;
       memberLoginButton.hidden = isLoggedIn;
       memberPinInput.disabled = isLoggedIn;
+      if (isLoggedIn && memberPinInput.type === "text") {
+        memberPinInput.type = "password";
+        togglePinVisibility.textContent = currentLanguage === "bn" ? "দেখান" : "Show PIN";
+        togglePinVisibility.setAttribute("aria-pressed", "false");
+      }
       memberLoginStatus.textContent = isLoggedIn
         ? (currentLanguage === "bn" ? "লগইন সফল। সদস্য ও নোটিশের ফর্ম খোলা হয়েছে।" : "Logged in. Member and notice forms are unlocked.")
         : "";
     }
+
+    togglePinVisibility.addEventListener("click", () => {
+      const shouldShow = memberPinInput.type === "password";
+      memberPinInput.type = shouldShow ? "text" : "password";
+      togglePinVisibility.textContent = shouldShow
+        ? (currentLanguage === "bn" ? "লুকান" : "Hide PIN")
+        : (currentLanguage === "bn" ? "দেখান" : "Show PIN");
+      togglePinVisibility.setAttribute("aria-pressed", String(shouldShow));
+      togglePinVisibility.setAttribute("aria-label", shouldShow
+        ? (currentLanguage === "bn" ? "PIN লুকান" : "Hide PIN")
+        : (currentLanguage === "bn" ? "PIN দেখান" : "Show PIN"));
+    });
 
     memberLoginButton.addEventListener("click", async () => {
       if (!window.crypto || !crypto.subtle) {
