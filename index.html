@@ -92,6 +92,22 @@
     .card h3 { margin: 0 0 10px; color: var(--gold-light); font-size: 1.12rem; }
     .card p { margin: 0; color: var(--muted); line-height: 1.8; font-size: .95rem; }
     .about { margin-top: 22px; }
+    .content-section { margin-top: 38px; }
+    .upload-panel { margin-top: 18px; padding: 20px; border: 1px dashed var(--line); border-radius: 16px; background: rgba(0,0,0,.14); }
+    .upload-panel label { display: block; margin: 10px 0 7px; color: var(--gold-light); font-weight: 700; }
+    .upload-panel input, .upload-panel textarea { width: 100%; padding: 11px; border: 1px solid var(--line); border-radius: 10px; color: var(--cream); background: rgba(15,5,12,.65); font: inherit; }
+    .upload-panel input[type="file"] { max-width: 100%; }
+    .upload-btn { margin-top: 12px; border: 0; border-radius: 999px; padding: 11px 18px; color: #25100d; background: linear-gradient(135deg, #ffe8ae, #d9a642); font: inherit; font-weight: 800; cursor: pointer; }
+    .upload-note { color: var(--muted); font-size: .88rem; line-height: 1.7; }
+    .member-grid, .gallery-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .member-card, .notice-item, .media-card { padding: 18px; border: 1px solid var(--line); border-radius: 15px; background: linear-gradient(145deg, rgba(70,28,47,.65), rgba(30,13,23,.8)); overflow-wrap: anywhere; }
+    .member-card h3, .notice-item h3 { margin: 0 0 8px; color: var(--gold-light); }
+    .member-card p, .notice-item p { color: var(--muted); line-height: 1.7; margin: 0; }
+    .preview-list { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-top: 18px; }
+    .preview-list img, .preview-list video { width: 100%; max-height: 260px; object-fit: contain; border-radius: 10px; background: #10070e; }
+    .preview-list a { color: var(--gold-light); overflow-wrap: anywhere; }
+    .notice-list { display: grid; gap: 12px; margin-top: 18px; }
+    @media (max-width: 760px) { .member-grid, .gallery-grid, .preview-list { grid-template-columns: 1fr; } }
     .about > p { color: var(--muted); line-height: 1.9; }
     .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; margin-top: 22px; }
     .fact { padding: 17px; border-radius: 12px; background: rgba(0,0,0,.17); color: var(--cream); line-height: 1.8; overflow-wrap: anywhere; }
@@ -122,6 +138,9 @@
     <a href="#identity" data-bn="আমাদের পরিচয়" data-en="Our Identity">আমাদের পরিচয়</a>
     <a href="#activities" data-bn="আমাদের উদ্যোগ" data-en="Our Initiatives">আমাদের উদ্যোগ</a>
     <a href="#community" data-bn="সংস্কৃতি ও সমাজ" data-en="Culture & Community">সংস্কৃতি ও সমাজ</a>
+    <a href="#members" data-bn="সদস্যবৃন্দ" data-en="Members">সদস্যবৃন্দ</a>
+    <a href="#notices" data-bn="নোটিশ" data-en="Notices">নোটিশ</a>
+    <a href="#gallery" data-bn="ছবি ও ভিডিও" data-en="Photos & Videos">ছবি ও ভিডিও</a>
     <a href="#contact" data-bn="যোগাযোগ" data-en="Contact">যোগাযোগ</a>
   </nav>
 
@@ -160,7 +179,65 @@
       </div>
     </section>
 
-    <section class="about" id="identity">
+
+    <section class="content-section" id="members">
+      <div class="section-head">
+        <h2 data-bn="সদস্যবৃন্দ" data-en="Our Members">সদস্যবৃন্দ</h2>
+        <p data-bn="ক্লাবের সদস্য ও দায়িত্বপ্রাপ্তদের পরিচিতি এখানে যোগ করা যাবে।" data-en="Add club members and their roles here.">ক্লাবের সদস্য ও দায়িত্বপ্রাপ্তদের পরিচিতি এখানে যোগ করা যাবে।</p>
+      </div>
+      <div class="member-grid" id="memberList">
+        <article class="member-card"><h3 data-bn="ক্লাবের সভাপতি" data-en="Club President">ক্লাবের সভাপতি</h3><p data-bn="নাম ও ছবি পরে যোগ করুন" data-en="Add name and photo later">নাম ও ছবি পরে যোগ করুন</p></article>
+        <article class="member-card"><h3 data-bn="ক্লাবের সম্পাদক" data-en="Club Secretary">ক্লাবের সম্পাদক</h3><p data-bn="নাম ও ছবি পরে যোগ করুন" data-en="Add name and photo later">নাম ও ছবি পরে যোগ করুন</p></article>
+        <article class="member-card"><h3 data-bn="সদস্যবৃন্দ" data-en="Club Members">সদস্যবৃন্দ</h3><p data-bn="সদস্যদের নাম ও দায়িত্ব যোগ করা যাবে" data-en="Add member names and roles">সদস্যদের নাম ও দায়িত্ব যোগ করা যাবে</p></article>
+      </div>
+      <div class="upload-panel">
+        <h3 data-bn="সদস্যের তথ্য যোগ করুন (প্রিভিউ)" data-en="Add Member Details (Preview)">সদস্যের তথ্য যোগ করুন (প্রিভিউ)</h3>
+        <label for="memberName" data-bn="সদস্যের নাম" data-en="Member name">সদস্যের নাম</label>
+        <input id="memberName" type="text" placeholder="নাম / Name">
+        <label for="memberRole" data-bn="দায়িত্ব / পদ" data-en="Role / Position">দায়িত্ব / পদ</label>
+        <input id="memberRole" type="text" placeholder="সভাপতি / President">
+        <label for="memberPhoto" data-bn="সদস্যের ছবি (ঐচ্ছিক)" data-en="Member photo (optional)">সদস্যের ছবি (ঐচ্ছিক)</label>
+        <input id="memberPhoto" type="file" accept="image/*">
+        <button class="upload-btn" id="addMember" type="button" data-bn="প্রিভিউতে যোগ করুন" data-en="Add to Preview">প্রিভিউতে যোগ করুন</button>
+        <p class="upload-note" data-bn="গুরুত্বপূর্ণ: এই ফর্মের পরিবর্তন আপাতত শুধু আপনার browser-এ প্রিভিউ হবে; স্থায়ীভাবে সবার জন্য প্রকাশ করতে database/backend সংযোগ প্রয়োজন।" data-en="Important: changes here are previewed only in this browser. A database/backend is needed to publish them permanently for everyone.">গুরুত্বপূর্ণ: এই ফর্মের পরিবর্তন আপাতত শুধু আপনার browser-এ প্রিভিউ হবে; স্থায়ীভাবে সবার জন্য প্রকাশ করতে database/backend সংযোগ প্রয়োজন।</p>
+      </div>
+    </section>
+
+    <section class="content-section" id="notices">
+      <div class="section-head">
+        <h2 data-bn="নোটিশ বোর্ড" data-en="Notice Board">নোটিশ বোর্ড</h2>
+        <p data-bn="ক্লাবের ঘোষণা ও অনুষ্ঠান সংক্রান্ত নোটিশ এখানে দেখা যাবে।" data-en="Club announcements and event notices appear here.">ক্লাবের ঘোষণা ও অনুষ্ঠান সংক্রান্ত নোটিশ এখানে দেখা যাবে।</p>
+      </div>
+      <div class="notice-list" id="noticeList">
+        <article class="notice-item"><h3 data-bn="শীঘ্রই নতুন নোটিশ" data-en="New notices coming soon">শীঘ্রই নতুন নোটিশ</h3><p data-bn="ক্লাবের পরবর্তী ঘোষণা এখানে প্রকাশ করা হবে।" data-en="The club's next announcement will be posted here.">ক্লাবের পরবর্তী ঘোষণা এখানে প্রকাশ করা হবে।</p></article>
+      </div>
+      <div class="upload-panel">
+        <h3 data-bn="নোটিশ যোগ করুন (প্রিভিউ)" data-en="Add Notice (Preview)">নোটিশ যোগ করুন (প্রিভিউ)</h3>
+        <label for="noticeTitle" data-bn="নোটিশের শিরোনাম" data-en="Notice title">নোটিশের শিরোনাম</label>
+        <input id="noticeTitle" type="text" placeholder="নোটিশের শিরোনাম / Notice title">
+        <label for="noticeDetails" data-bn="বিস্তারিত" data-en="Details">বিস্তারিত</label>
+        <textarea id="noticeDetails" rows="3" placeholder="নোটিশের বিবরণ / Notice details"></textarea>
+        <label for="noticeFile" data-bn="ফাইল সংযুক্ত করুন (ঐচ্ছিক)" data-en="Attach a file (optional)">ফাইল সংযুক্ত করুন (ঐচ্ছিক)</label>
+        <input id="noticeFile" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+        <button class="upload-btn" id="addNotice" type="button" data-bn="নোটিশের প্রিভিউ যোগ করুন" data-en="Add Notice Preview">নোটিশের প্রিভিউ যোগ করুন</button>
+        <p class="upload-note" data-bn="এখানে যোগ করা নোটিশ স্থায়ীভাবে অনলাইনে সংরক্ষিত হবে না। সকল দর্শকের জন্য প্রকাশ করতে নিরাপদ admin login ও cloud storage/database লাগবে।" data-en="Notices added here are not saved online permanently. Secure admin login and cloud storage/database are required to publish for all visitors.">এখানে যোগ করা নোটিশ স্থায়ীভাবে অনলাইনে সংরক্ষিত হবে না। সকল দর্শকের জন্য প্রকাশ করতে নিরাপদ admin login ও cloud storage/database লাগবে।</p>
+      </div>
+    </section>
+
+    <section class="content-section" id="gallery">
+      <div class="section-head">
+        <h2 data-bn="ছবি ও ভিডিও গ্যালারি" data-en="Photos & Videos Gallery">ছবি ও ভিডিও গ্যালারি</h2>
+        <p data-bn="ক্লাবের অনুষ্ঠান, উৎসব এবং স্মরণীয় মুহূর্তের ছবি ও ভিডিও।" data-en="Photos and videos from club events, festivals and memorable moments.">ক্লাবের অনুষ্ঠান, উৎসব এবং স্মরণীয় মুহূর্তের ছবি ও ভিডিও।</p>
+      </div>
+      <div class="upload-panel">
+        <h3 data-bn="ছবি / ভিডিও যোগ করুন (প্রিভিউ)" data-en="Add Photos / Videos (Preview)">ছবি / ভিডিও যোগ করুন (প্রিভিউ)</h3>
+        <label for="galleryFiles" data-bn="ছবি বা ভিডিও বেছে নিন" data-en="Choose photos or videos">ছবি বা ভিডিও বেছে নিন</label>
+        <input id="galleryFiles" type="file" accept="image/*,video/*" multiple>
+        <p class="upload-note" data-bn="একসঙ্গে একাধিক ফাইল বেছে নিতে পারো। প্রিভিউ শুধু এই browser-এ থাকবে; স্থায়ী online gallery করতে cloud storage সংযোগ করতে হবে।" data-en="Select multiple files at once. Previews stay in this browser only; a permanent online gallery needs cloud storage.">একসঙ্গে একাধিক ফাইল বেছে নিতে পারো। প্রিভিউ শুধু এই browser-এ থাকবে; স্থায়ী online gallery করতে cloud storage সংযোগ করতে হবে।</p>
+      </div>
+      <div class="preview-list" id="galleryPreview"></div>
+    </section>
+\n    <section class="about" id="identity">
       <h2 data-bn="আমাদের পরিচয়" data-en="About Our Club">আমাদের পরিচয়</h2>
       <p data-bn="বারডাঙ্গা যুব সংঘের এই ডিজিটাল পরিচিতিতে ক্লাবের ঐতিহ্য, উদ্যোগ এবং স্থানীয় সমাজের সঙ্গে আমাদের সংযোগ তুলে ধরা হবে।" data-en="This digital home for Bardanga Yuba Sangha highlights the club's heritage, initiatives and connection with the local community.">বারডাঙ্গা যুব সংঘের এই ডিজিটাল পরিচিতিতে ক্লাবের ঐতিহ্য, উদ্যোগ এবং স্থানীয় সমাজের সঙ্গে আমাদের সংযোগ তুলে ধরা হবে।</p>
       <div class="facts">
@@ -197,6 +274,49 @@
     });
 
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Client-side previews only; permanent publishing needs a backend.
+    document.getElementById("addMember").addEventListener("click", () => {
+      const name = document.getElementById("memberName").value.trim();
+      const role = document.getElementById("memberRole").value.trim();
+      const photo = document.getElementById("memberPhoto").files[0];
+      if (!name || !role) { alert(currentLanguage === "bn" ? "সদস্যের নাম ও পদ লিখুন।" : "Please enter the member name and role."); return; }
+      const card = document.createElement("article");
+      card.className = "member-card";
+      if (photo) { const img = document.createElement("img"); img.src = URL.createObjectURL(photo); img.alt = name; img.style.cssText = "width:100%;max-height:190px;object-fit:cover;border-radius:10px;margin-bottom:12px"; card.appendChild(img); }
+      const heading = document.createElement("h3"); heading.textContent = name; card.appendChild(heading);
+      const p = document.createElement("p"); p.textContent = role; card.appendChild(p);
+      document.getElementById("memberList").appendChild(card);
+      document.getElementById("memberName").value = ""; document.getElementById("memberRole").value = ""; document.getElementById("memberPhoto").value = "";
+    });
+
+    document.getElementById("addNotice").addEventListener("click", () => {
+      const title = document.getElementById("noticeTitle").value.trim();
+      const details = document.getElementById("noticeDetails").value.trim();
+      const file = document.getElementById("noticeFile").files[0];
+      if (!title || !details) { alert(currentLanguage === "bn" ? "নোটিশের শিরোনাম ও বিবরণ লিখুন।" : "Please enter a notice title and details."); return; }
+      const item = document.createElement("article"); item.className = "notice-item";
+      const h = document.createElement("h3"); h.textContent = title; item.appendChild(h);
+      const p = document.createElement("p"); p.textContent = details; item.appendChild(p);
+      if (file) { const link = document.createElement("a"); link.href = URL.createObjectURL(file); link.download = file.name; link.textContent = "📎 " + file.name; link.style.cssText = "display:inline-block;margin-top:12px;color:var(--gold-light)"; item.appendChild(link); }
+      document.getElementById("noticeList").prepend(item);
+      document.getElementById("noticeTitle").value = ""; document.getElementById("noticeDetails").value = ""; document.getElementById("noticeFile").value = "";
+    });
+
+    document.getElementById("galleryFiles").addEventListener("change", (event) => {
+      const target = document.getElementById("galleryPreview");
+      Array.from(event.target.files || []).forEach((file) => {
+        const card = document.createElement("div"); card.className = "media-card";
+        const media = document.createElement(file.type.startsWith("video/") ? "video" : "img");
+        media.src = URL.createObjectURL(file);
+        if (media.tagName === "VIDEO") { media.controls = true; media.playsInline = true; }
+        else media.alt = file.name;
+        card.appendChild(media);
+        const caption = document.createElement("p"); caption.className = "upload-note"; caption.textContent = file.name; card.appendChild(caption);
+        target.appendChild(card);
+      });
+      event.target.value = "";
+    });
   </script>
 </body>
 </html>
