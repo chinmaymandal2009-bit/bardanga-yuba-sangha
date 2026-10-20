@@ -429,13 +429,15 @@
       const role = document.getElementById("memberRole").value.trim();
       const photoUrl = document.getElementById("memberPhotoUrl").value.trim();
       if (!name || !mobile || !age || !role) { alert(currentLanguage === "bn" ? "নাম, মোবাইল নম্বর, বয়স ও পদ পূরণ করুন।" : "Please enter name, mobile number, age and position."); return; }
+      const adminPin = window.prompt(currentLanguage === "bn" ? "Google Apps Script-এর GALLERY_ADMIN_PIN দিন:" : "Enter the Google Apps Script GALLERY_ADMIN_PIN:");
+      if (!adminPin) return;
       const button = this; button.disabled = true;
       const status = document.getElementById("memberLoginStatus");
       try {
         await fetch(MEMBER_API_URL, {
           method: "POST", mode: "no-cors",
           headers: {"Content-Type":"text/plain;charset=UTF-8"},
-          body: JSON.stringify({action:"addMember",pin:memberPinInput.value || "",name:name,phone:mobile,age:age,role:role,photoUrl:photoUrl})
+          body: JSON.stringify({action:"addMember",pin:adminPin,name:name,phone:mobile,age:age,role:role,photoUrl:photoUrl})
         });
         status.textContent = currentLanguage === "bn" ? "তথ্য পাঠানো হয়েছে। Sheets-এ save হলে তালিকা refresh হবে।" : "Submitted. The list will refresh after the data is saved to Sheets.";
         document.getElementById("memberName").value = "";
