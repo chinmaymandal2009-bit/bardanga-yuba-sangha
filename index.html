@@ -194,7 +194,11 @@
         <h3 data-bn="সদস্যের তথ্য যোগ করুন (প্রিভিউ)" data-en="Add Member Details (Preview)">সদস্যের তথ্য যোগ করুন (প্রিভিউ)</h3>
         <label for="memberName" data-bn="সদস্যের নাম" data-en="Member name">সদস্যের নাম</label>
         <input id="memberName" type="text" placeholder="নাম / Name">
-        <label for="memberRole" data-bn="দায়িত্ব / পদ" data-en="Role / Position">দায়িত্ব / পদ</label>
+        <label for="memberMobile" data-bn="মোবাইল নম্বর" data-en="Mobile number">মোবাইল নম্বর</label>
+        <input id="memberMobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="Mobile number">
+        <label for="memberAge" data-bn="বয়স" data-en="Age">বয়স</label>
+        <input id="memberAge" type="number" min="1" max="120" inputmode="numeric" placeholder="Age">
+        <label for="memberRole" data-bn="পদ / দায়িত্ব" data-en="Position / Role">পদ / দায়িত্ব</label>
         <input id="memberRole" type="text" placeholder="সভাপতি / President">
         <label for="memberPhoto" data-bn="সদস্যের ছবি (ঐচ্ছিক)" data-en="Member photo (optional)">সদস্যের ছবি (ঐচ্ছিক)</label>
         <input id="memberPhoto" type="file" accept="image/*">
@@ -278,16 +282,24 @@
     // Client-side previews only; permanent publishing needs a backend.
     document.getElementById("addMember").addEventListener("click", () => {
       const name = document.getElementById("memberName").value.trim();
+      const mobile = document.getElementById("memberMobile").value.trim();
+      const age = document.getElementById("memberAge").value.trim();
       const role = document.getElementById("memberRole").value.trim();
       const photo = document.getElementById("memberPhoto").files[0];
-      if (!name || !role) { alert(currentLanguage === "bn" ? "সদস্যের নাম ও পদ লিখুন।" : "Please enter the member name and role."); return; }
+      if (!name || !mobile || !age || !role) { alert(currentLanguage === "bn" ? "নাম, মোবাইল নম্বর, বয়স ও পদ পূরণ করুন।" : "Please enter name, mobile number, age and position."); return; }
       const card = document.createElement("article");
       card.className = "member-card";
       if (photo) { const img = document.createElement("img"); img.src = URL.createObjectURL(photo); img.alt = name; img.style.cssText = "width:100%;max-height:190px;object-fit:cover;border-radius:10px;margin-bottom:12px"; card.appendChild(img); }
       const heading = document.createElement("h3"); heading.textContent = name; card.appendChild(heading);
-      const p = document.createElement("p"); p.textContent = role; card.appendChild(p);
+      const p = document.createElement("p");
+      p.textContent = (currentLanguage === "bn" ? "পদ: " : "Position: ") + role + " · " + (currentLanguage === "bn" ? "বয়স: " : "Age: ") + age + " · " + (currentLanguage === "bn" ? "মোবাইল: " : "Mobile: ") + mobile;
+      card.appendChild(p);
       document.getElementById("memberList").appendChild(card);
-      document.getElementById("memberName").value = ""; document.getElementById("memberRole").value = ""; document.getElementById("memberPhoto").value = "";
+      document.getElementById("memberName").value = "";
+      document.getElementById("memberMobile").value = "";
+      document.getElementById("memberAge").value = "";
+      document.getElementById("memberRole").value = "";
+      document.getElementById("memberPhoto").value = "";
     });
 
     document.getElementById("addNotice").addEventListener("click", () => {
