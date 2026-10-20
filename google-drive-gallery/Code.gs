@@ -2,7 +2,7 @@
  * Bardanga Yuba Sangha — Drive + Sheets backend.
  * Script Properties: GALLERY_FOLDER_ID, GALLERY_ADMIN_PIN, DATA_SPREADSHEET_ID.
  * Spreadsheet tabs/headers:
- * Members: Created | Name | Phone | Age | Photo URL | PDF URL
+ * Members: Created | Name | Phone | Age | Role | Photo URL | PDF URL
  * Notices: Created | Title | Details | Attachment URL | PDF URL
  */
 const MAX_FILE_BYTES = 8 * 1024 * 1024;
@@ -30,10 +30,10 @@ function doPost(e) {
     const pin=PropertiesService.getScriptProperties().getProperty("GALLERY_ADMIN_PIN");
     if(!pin||String(b.pin||"")!==pin) throw new Error("Invalid admin PIN");
     if(b.action==="addMember"||b.action==="editMember") {
-      const name=clean_(b.name,100), phone=clean_(b.phone,40), age=clean_(b.age,3), photo=clean_(b.photoUrl,500);
+      const name=clean_(b.name,100), phone=clean_(b.phone,40), age=clean_(b.age,3), role=clean_(b.role,100), photo=clean_(b.photoUrl,500);
       if(!name) throw new Error("Member name is required");
-      const pdf=createPdf_("Member Details - "+name,[["Member Details",""],["Name",name],["Phone",phone||"Not provided"],["Age",age||"Not provided"],["Photo URL",photo||"Not provided"]]);
-      const values=[new Date(),name,phone,age,photo,pdf.getUrl()];
+      const pdf=createPdf_("Member Details - "+name,[["Member Details",""],["Name",name],["Phone",phone||"Not provided"],["Age",age||"Not provided"],["Role",role||"Not provided"],["Photo URL",photo||"Not provided"]]);
+      const values=[new Date(),name,phone,age,role,photo,pdf.getUrl()];
       if(b.action==="addMember") sheet_("Members").appendRow(values); else updateRow_("Members",b.row,values);
       return json_({ok:true,pdfUrl:pdf.getUrl()});
     }
@@ -74,7 +74,7 @@ function listRows_(tab) {
   const s=sheet_(tab); if(s.getLastRow()<2) return [];
   const values=s.getRange(2,1,s.getLastRow()-1,s.getLastColumn()).getDisplayValues();
   return values.map(function(r,i){const row=i+2;return tab==="Members"
-    ? {row:row,created:r[0]||"",name:r[1]||"",phone:r[2]||"",age:r[3]||"",photoUrl:r[4]||"",pdfUrl:r[5]||""}
+    ? {row:row,created:r[0]||"",name:r[1]||"",phone:r[2]||"",age:r[3]||"",role:r[4]||"",photoUrl:r[5]||"",pdfUrl:r[6]||""}
     : {row:row,created:r[0]||"",title:r[1]||"",details:r[2]||"",fileUrl:r[3]||"",pdfUrl:r[4]||""};}).reverse();
 }
 function createPdf_(title,pairs) {
