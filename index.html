@@ -93,6 +93,8 @@
     .card p { margin: 0; color: var(--muted); line-height: 1.8; font-size: .95rem; }
     .about { margin-top: 22px; }
     .content-section { margin-top: 38px; }
+    .member-only { display: none; }
+    body.member-authenticated .member-only { display: block; }
     .upload-panel { margin-top: 18px; padding: 20px; border: 1px dashed var(--line); border-radius: 16px; background: rgba(0,0,0,.14); }
     .upload-panel label { display: block; margin: 10px 0 7px; color: var(--gold-light); font-weight: 700; }
     .upload-panel input, .upload-panel textarea { width: 100%; padding: 11px; border: 1px solid var(--line); border-radius: 10px; color: var(--cream); background: rgba(15,5,12,.65); font: inherit; }
@@ -180,6 +182,22 @@
     </section>
 
 
+    
+    <section class="content-section" id="member-login">
+      <div class="section-head">
+        <h2 data-bn="সদস্য লগইন" data-en="Member Login">সদস্য লগইন</h2>
+        <p data-bn="সদস্যের তথ্য যোগ বা নোটিশ প্রকাশের ফর্ম খুলতে Secret PIN দিন।" data-en="Enter the Secret PIN to open member details and notice forms.">সদস্যের তথ্য যোগ বা নোটিশ প্রকাশের ফর্ম খুলতে Secret PIN দিন।</p>
+      </div>
+      <div class="upload-panel">
+        <label for="memberPin" data-bn="Secret PIN" data-en="Secret PIN">Secret PIN</label>
+        <input id="memberPin" type="password" inputmode="text" autocomplete="current-password" placeholder="Enter member PIN" aria-describedby="pinHelp">
+        <p class="upload-note" id="pinHelp" data-bn="PIN-টি index.html-এর MEMBER_SECRET_PIN placeholder-এ বদলাতে হবে। মনে রেখো, এই সাধারণ PIN নিরাপদ authentication নয়; website-এর code দেখে এটি বের করা সম্ভব।" data-en="Replace the MEMBER_SECRET_PIN placeholder in index.html. This simple PIN is not secure authentication; visitors can inspect the website code.">PIN-টি index.html-এর MEMBER_SECRET_PIN placeholder-এ বদলাতে হবে। মনে রেখো, এই সাধারণ PIN নিরাপদ authentication নয়; website-এর code দেখে এটি বের করা সম্ভব।</p>
+        <button class="upload-btn" id="memberLoginButton" type="button" data-bn="লগইন করুন" data-en="Log In">লগইন করুন</button>
+        <button class="upload-btn" id="memberLogoutButton" type="button" hidden data-bn="লগআউট" data-en="Log Out">লগআউট</button>
+        <p class="upload-note" id="memberLoginStatus" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
     <section class="content-section" id="members">
       <div class="section-head">
         <h2 data-bn="সদস্যবৃন্দ" data-en="Our Members">সদস্যবৃন্দ</h2>
@@ -190,7 +208,7 @@
         <article class="member-card"><h3 data-bn="ক্লাবের সম্পাদক" data-en="Club Secretary">ক্লাবের সম্পাদক</h3><p data-bn="নাম ও ছবি পরে যোগ করুন" data-en="Add name and photo later">নাম ও ছবি পরে যোগ করুন</p></article>
         <article class="member-card"><h3 data-bn="সদস্যবৃন্দ" data-en="Club Members">সদস্যবৃন্দ</h3><p data-bn="সদস্যদের নাম ও দায়িত্ব যোগ করা যাবে" data-en="Add member names and roles">সদস্যদের নাম ও দায়িত্ব যোগ করা যাবে</p></article>
       </div>
-      <div class="upload-panel">
+      <div class="upload-panel member-only">
         <h3 data-bn="সদস্যের তথ্য যোগ করুন (প্রিভিউ)" data-en="Add Member Details (Preview)">সদস্যের তথ্য যোগ করুন (প্রিভিউ)</h3>
         <label for="memberName" data-bn="সদস্যের নাম" data-en="Member name">সদস্যের নাম</label>
         <input id="memberName" type="text" placeholder="নাম / Name">
@@ -215,7 +233,7 @@
       <div class="notice-list" id="noticeList">
         <article class="notice-item"><h3 data-bn="শীঘ্রই নতুন নোটিশ" data-en="New notices coming soon">শীঘ্রই নতুন নোটিশ</h3><p data-bn="ক্লাবের পরবর্তী ঘোষণা এখানে প্রকাশ করা হবে।" data-en="The club's next announcement will be posted here.">ক্লাবের পরবর্তী ঘোষণা এখানে প্রকাশ করা হবে।</p></article>
       </div>
-      <div class="upload-panel">
+      <div class="upload-panel member-only">
         <h3 data-bn="নোটিশ যোগ করুন (প্রিভিউ)" data-en="Add Notice (Preview)">নোটিশ যোগ করুন (প্রিভিউ)</h3>
         <label for="noticeTitle" data-bn="নোটিশের শিরোনাম" data-en="Notice title">নোটিশের শিরোনাম</label>
         <input id="noticeTitle" type="text" placeholder="নোটিশের শিরোনাম / Notice title">
@@ -285,6 +303,48 @@
     });
 
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // BASIC PIN GATE ONLY: this is not secure authentication on a public GitHub Pages site.
+    // Replace the placeholder below. Anyone can inspect the published JavaScript to find it.
+    const MEMBER_SECRET_PIN = "CHANGE_ME_TO_YOUR_PIN";
+    const memberLoginButton = document.getElementById("memberLoginButton");
+    const memberLogoutButton = document.getElementById("memberLogoutButton");
+    const memberPinInput = document.getElementById("memberPin");
+    const memberLoginStatus = document.getElementById("memberLoginStatus");
+
+    function setMemberAccess(isLoggedIn) {
+      document.body.classList.toggle("member-authenticated", isLoggedIn);
+      memberLogoutButton.hidden = !isLoggedIn;
+      memberLoginButton.hidden = isLoggedIn;
+      memberPinInput.disabled = isLoggedIn;
+      memberLoginStatus.textContent = isLoggedIn
+        ? (currentLanguage === "bn" ? "লগইন সফল। সদস্য ও নোটিশের ফর্ম খোলা হয়েছে।" : "Logged in. Member and notice forms are unlocked.")
+        : "";
+    }
+
+    memberLoginButton.addEventListener("click", () => {
+      if (MEMBER_SECRET_PIN === "CHANGE_ME_TO_YOUR_PIN") {
+        memberLoginStatus.textContent = currentLanguage === "bn"
+          ? "প্রথমে index.html-এ CHANGE_ME_TO_YOUR_PIN placeholder বদলাও।"
+          : "First replace CHANGE_ME_TO_YOUR_PIN in index.html.";
+        return;
+      }
+      if (memberPinInput.value === MEMBER_SECRET_PIN) {
+        setMemberAccess(true);
+        memberPinInput.value = "";
+      } else {
+        memberLoginStatus.textContent = currentLanguage === "bn" ? "ভুল PIN। আবার চেষ্টা করুন।" : "Incorrect PIN. Please try again.";
+      }
+    });
+
+    memberLogoutButton.addEventListener("click", () => {
+      setMemberAccess(false);
+      memberPinInput.value = "";
+    });
+
+    memberPinInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") memberLoginButton.click();
+    });
 
     // Client-side previews only; permanent publishing needs a backend.
     document.getElementById("addMember").addEventListener("click", () => {
