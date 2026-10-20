@@ -9,7 +9,7 @@ const MAX_FILE_BYTES = 8 * 1024 * 1024;
 function doGet(e) {
   try {
     const action = (e && e.parameter && e.parameter.action) || "gallery";
-    if (action === "members") return json_({ok:true,members:listRows_("Members")});
+    if (action === "members") return respond_(e,{ok:true,members:listRows_("Members")});
     if (action === "notices") return json_({ok:true,notices:listRows_("Notices")});
     if (action !== "gallery") throw new Error("Unknown action");
     const it = galleryFolder_().getFiles(), files = [];
@@ -96,3 +96,4 @@ function galleryFolder_(){const id=PropertiesService.getScriptProperties().getPr
 function sheet_(tab){const id=PropertiesService.getScriptProperties().getProperty("DATA_SPREADSHEET_ID");if(!id)throw new Error("Set DATA_SPREADSHEET_ID in Script Properties");const s=SpreadsheetApp.openById(id).getSheetByName(tab);if(!s)throw new Error("Create a spreadsheet tab named "+tab);return s;}
 function clean_(v,n){return String(v==null?"":v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,"").trim().slice(0,n);}
 function json_(d){return ContentService.createTextOutput(JSON.stringify(d)).setMimeType(ContentService.MimeType.JSON);}
+function respond_(e,d){const cb=String((e&&e.parameter&&e.parameter.callback)||"");if(cb&&/^[A-Za-z_$][0-9A-Za-z_$\.]*$/.test(cb))return ContentService.createTextOutput(cb+"("+JSON.stringify(d)+");").setMimeType(ContentService.MimeType.JAVASCRIPT);return json_(d);}
