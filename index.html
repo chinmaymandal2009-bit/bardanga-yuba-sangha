@@ -206,13 +206,9 @@
         <h2 data-bn="সদস্যবৃন্দ" data-en="Our Members">সদস্যবৃন্দ</h2>
         <p data-bn="ক্লাবের সদস্য ও দায়িত্বপ্রাপ্তদের পরিচিতি এখানে যোগ করা যাবে।" data-en="Add club members and their roles here.">ক্লাবের সদস্য ও দায়িত্বপ্রাপ্তদের পরিচিতি এখানে যোগ করা যাবে।</p>
       </div>
-      <div class="member-grid" id="memberList">
-        <article class="member-card"><h3 data-bn="ক্লাবের সভাপতি" data-en="Club President">ক্লাবের সভাপতি</h3><p data-bn="নাম ও ছবি পরে যোগ করুন" data-en="Add name and photo later">নাম ও ছবি পরে যোগ করুন</p></article>
-        <article class="member-card"><h3 data-bn="ক্লাবের সম্পাদক" data-en="Club Secretary">ক্লাবের সম্পাদক</h3><p data-bn="নাম ও ছবি পরে যোগ করুন" data-en="Add name and photo later">নাম ও ছবি পরে যোগ করুন</p></article>
-        <article class="member-card"><h3 data-bn="সদস্যবৃন্দ" data-en="Club Members">সদস্যবৃন্দ</h3><p data-bn="সদস্যদের নাম ও দায়িত্ব যোগ করা যাবে" data-en="Add member names and roles">সদস্যদের নাম ও দায়িত্ব যোগ করা যাবে</p></article>
-      </div>
+      <div class="member-grid" id="memberList"><p class="upload-note" id="memberLoadStatus" role="status">সদস্যদের তথ্য লোড হচ্ছে…</p></div>
       <div class="drive-live-view" style="margin-top:18px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:rgba(0,0,0,.14)"><p class="upload-note" style="padding:0 14px">Drive files · If the list does not load, open the folder directly.</p><iframe title="Shared Google Drive files" src="https://drive.google.com/embeddedfolderview?id=1x2E1Vcv-R2MHxBys05y8uobGPoTo6SFX#grid" style="width:100%;height:440px;border:0;background:#fff" loading="lazy" allow="autoplay"></iframe><p style="padding:0 14px 14px"><a class="cta" href="https://drive.google.com/drive/folders/1x2E1Vcv-R2MHxBys05y8uobGPoTo6SFX?usp=sharing" target="_blank" rel="noopener noreferrer">Open Drive folder / ফোল্ডার খুলুন</a></p></div><div class="upload-panel member-only">
-        <h3 data-bn="সদস্যের তথ্য যোগ করুন (প্রিভিউ)" data-en="Add Member Details (Preview)">সদস্যের তথ্য যোগ করুন (প্রিভিউ)</h3>
+        <h3 data-bn="সদস্যের তথ্য যোগ করুন" data-en="Add Member Details">সদস্যের তথ্য যোগ করুন</h3>
         <label for="memberName" data-bn="সদস্যের নাম" data-en="Member name">সদস্যের নাম</label>
         <input id="memberName" type="text" placeholder="নাম / Name">
         <label for="memberMobile" data-bn="মোবাইল নম্বর" data-en="Mobile number">মোবাইল নম্বর</label>
@@ -221,9 +217,9 @@
         <input id="memberAge" type="number" min="1" max="120" inputmode="numeric" placeholder="Age">
         <label for="memberRole" data-bn="পদ / দায়িত্ব" data-en="Position / Role">পদ / দায়িত্ব</label>
         <input id="memberRole" type="text" placeholder="সভাপতি / President">
-        <label for="memberPhoto" data-bn="সদস্যের ছবি (ঐচ্ছিক)" data-en="Member photo (optional)">সদস্যের ছবি (ঐচ্ছিক)</label>
-        <input id="memberPhoto" type="file" accept="image/*">
-        <button class="upload-btn" id="addMember" type="button" data-bn="প্রিভিউতে যোগ করুন" data-en="Add to Preview">প্রিভিউতে যোগ করুন</button>
+        <label for="memberPhotoUrl" data-bn="ছবির লিংক (ঐচ্ছিক)" data-en="Photo URL (optional)">ছবির লিংক (ঐচ্ছিক)</label>
+        <input id="memberPhotoUrl" type="url" placeholder="https://...">
+        <button class="upload-btn" id="addMember" type="button" data-bn="সেভ করুন" data-en="Save Member">সেভ করুন</button>
         <p class="upload-note" data-bn="গুরুত্বপূর্ণ: এই ফর্মের পরিবর্তন আপাতত শুধু আপনার browser-এ প্রিভিউ হবে; স্থায়ীভাবে সবার জন্য প্রকাশ করতে database/backend সংযোগ প্রয়োজন।" data-en="Important: changes here are previewed only in this browser. A database/backend is needed to publish them permanently for everyone.">গুরুত্বপূর্ণ: এই ফর্মের পরিবর্তন আপাতত শুধু আপনার browser-এ প্রিভিউ হবে; স্থায়ীভাবে সবার জন্য প্রকাশ করতে database/backend সংযোগ প্রয়োজন।</p>
       </div>
     </section>
@@ -380,27 +376,77 @@
       if (event.key === "Enter") memberLoginButton.click();
     });
 
-    // Client-side previews only; permanent publishing needs a backend.
-    document.getElementById("addMember").addEventListener("click", () => {
+    // Members: save to Apps Script and load public member list.
+    const MEMBER_API_URL = "https://script.google.com/macros/s/AKfycbyQ5l90ACfq-AYHUuKSF9vunFrpLuJ7TqHVBPbC-gWkVh6LJRKiHKypYJwiIPs63Ye-Lg/exec";
+    function loadMembers() {
+      const status = document.getElementById("memberLoadStatus");
+      const list = document.getElementById("memberList");
+      const callbackName = "byMembersCallback";
+      window[callbackName] = function(data) {
+        delete window[callbackName];
+        if (!data || !data.ok || !Array.isArray(data.members)) {
+          status.textContent = currentLanguage === "bn" ? "সদস্যদের তথ্য লোড করা যায়নি। Apps Script deployment ও Google Sheets সেটিংস পরীক্ষা করুন।" : "Could not load members. Check Apps Script deployment and Google Sheets settings.";
+          return;
+        }
+        list.replaceChildren();
+        if (!data.members.length) {
+          const empty = document.createElement("p"); empty.className = "upload-note";
+          empty.textContent = currentLanguage === "bn" ? "এখনও কোনো সদস্য যোগ করা হয়নি।" : "No members have been added yet.";
+          list.appendChild(empty); return;
+        }
+        data.members.forEach(function(member) {
+          const card = document.createElement("article"); card.className = "member-card";
+          if (member.photoUrl) {
+            const img = document.createElement("img"); img.src = member.photoUrl; img.alt = member.name || "Member";
+            img.loading = "lazy"; img.style.cssText = "width:100%;max-height:190px;object-fit:cover;border-radius:10px;margin-bottom:12px";
+            card.appendChild(img);
+          }
+          const h = document.createElement("h3"); h.textContent = member.name || ""; card.appendChild(h);
+          const p = document.createElement("p");
+          p.textContent = (currentLanguage === "bn" ? "পদ: " : "Position: ") + (member.role || "—") +
+            " · " + (currentLanguage === "bn" ? "বয়স: " : "Age: ") + (member.age || "—") +
+            " · " + (currentLanguage === "bn" ? "মোবাইল: " : "Mobile: ") + (member.phone || "—");
+          card.appendChild(p);
+          if (member.pdfUrl) {
+            const a = document.createElement("a"); a.href = member.pdfUrl; a.target = "_blank"; a.rel = "noopener noreferrer";
+            a.textContent = currentLanguage === "bn" ? "সদস্যের PDF দেখুন" : "View member PDF";
+            a.style.cssText = "display:inline-block;margin-top:10px;color:var(--gold-light)"; card.appendChild(a);
+          }
+          list.appendChild(card);
+        });
+      };
+      const script = document.createElement("script");
+      script.src = MEMBER_API_URL + "?action=members&callback=" + callbackName + "&t=" + Date.now();
+      script.onerror = function() { status.textContent = currentLanguage === "bn" ? "সদস্যদের তথ্য লোড হয়নি। Apps Script deploy হয়েছে কি না দেখুন।" : "Member list failed to load. Check the Apps Script deployment."; };
+      document.body.appendChild(script);
+    }
+    loadMembers();
+
+    document.getElementById("addMember").addEventListener("click", async function() {
       const name = document.getElementById("memberName").value.trim();
       const mobile = document.getElementById("memberMobile").value.trim();
       const age = document.getElementById("memberAge").value.trim();
       const role = document.getElementById("memberRole").value.trim();
-      const photo = document.getElementById("memberPhoto").files[0];
+      const photoUrl = document.getElementById("memberPhotoUrl").value.trim();
       if (!name || !mobile || !age || !role) { alert(currentLanguage === "bn" ? "নাম, মোবাইল নম্বর, বয়স ও পদ পূরণ করুন।" : "Please enter name, mobile number, age and position."); return; }
-      const card = document.createElement("article");
-      card.className = "member-card";
-      if (photo) { const img = document.createElement("img"); img.src = URL.createObjectURL(photo); img.alt = name; img.style.cssText = "width:100%;max-height:190px;object-fit:cover;border-radius:10px;margin-bottom:12px"; card.appendChild(img); }
-      const heading = document.createElement("h3"); heading.textContent = name; card.appendChild(heading);
-      const p = document.createElement("p");
-      p.textContent = (currentLanguage === "bn" ? "পদ: " : "Position: ") + role + " · " + (currentLanguage === "bn" ? "বয়স: " : "Age: ") + age + " · " + (currentLanguage === "bn" ? "মোবাইল: " : "Mobile: ") + mobile;
-      card.appendChild(p);
-      document.getElementById("memberList").appendChild(card);
-      document.getElementById("memberName").value = "";
-      document.getElementById("memberMobile").value = "";
-      document.getElementById("memberAge").value = "";
-      document.getElementById("memberRole").value = "";
-      document.getElementById("memberPhoto").value = "";
+      const button = this; button.disabled = true;
+      const status = document.getElementById("memberLoginStatus");
+      try {
+        await fetch(MEMBER_API_URL, {
+          method: "POST", mode: "no-cors",
+          headers: {"Content-Type":"text/plain;charset=UTF-8"},
+          body: JSON.stringify({action:"addMember",pin:memberPinInput.value || "",name:name,phone:mobile,age:age,role:role,photoUrl:photoUrl})
+        });
+        status.textContent = currentLanguage === "bn" ? "তথ্য পাঠানো হয়েছে। Sheets-এ save হলে তালিকা refresh হবে।" : "Submitted. The list will refresh after the data is saved to Sheets.";
+        document.getElementById("memberName").value = "";
+        document.getElementById("memberMobile").value = "";
+        document.getElementById("memberAge").value = "";
+        document.getElementById("memberRole").value = "";
+        document.getElementById("memberPhotoUrl").value = "";
+        window.setTimeout(loadMembers, 2500);
+      } catch (error) {
+        status.textContent = currentLanguage === "bn" ? "তথ্য পাঠানো যায়নি। URL ও Apps Script deployment পরীক্ষা করুন।" : "Could not submit. Check the URL and Apps Script deployment.";
+      } finally { button.disabled = false; }
     });
 
     document.getElementById("addNotice").addEventListener("click", () => {
