@@ -261,7 +261,9 @@
         <h3 data-bn="ছবি / ভিডিও যোগ করুন (প্রিভিউ)" data-en="Add Photos / Videos (Preview)">ছবি / ভিডিও যোগ করুন (প্রিভিউ)</h3>
         <label for="galleryFiles" data-bn="ছবি বা ভিডিও বেছে নিন" data-en="Choose photos or videos">ছবি বা ভিডিও বেছে নিন</label>
         <input id="galleryFiles" type="file" accept="image/*,video/*" multiple>
-        <p class="upload-note" data-bn="একসঙ্গে একাধিক ফাইল বেছে নিতে পারো। প্রিভিউ শুধু এই browser-এ থাকবে; স্থায়ী online gallery করতে cloud storage সংযোগ করতে হবে।" data-en="Select multiple files at once. Previews stay in this browser only; a permanent online gallery needs cloud storage.">একসঙ্গে একাধিক ফাইল বেছে নিতে পারো। প্রিভিউ শুধু এই browser-এ থাকবে; স্থায়ী online gallery করতে cloud storage সংযোগ করতে হবে।</p>
+        <p class="upload-note" data-bn="একসঙ্গে সর্বোচ্চ ১০টি ছবি বা ভিডিও বেছে নাও। প্রতি ফাইল সর্বোচ্চ ৮ MB। Upload করতে Admin PIN লাগবে।" data-en="Choose up to 10 photos or videos. Maximum 8 MB per file. Admin PIN is required to upload.">একসঙ্গে সর্বোচ্চ ১০টি ছবি বা ভিডিও বেছে নাও। প্রতি ফাইল সর্বোচ্চ ৮ MB। Upload করতে Admin PIN লাগবে।</p>
+        <button class="upload-btn" id="uploadGalleryFiles" type="button" data-bn="🔐 PIN দিয়ে Upload করুন" data-en="🔐 Upload with Admin PIN">🔐 PIN দিয়ে Upload করুন</button>
+        <p class="upload-note" id="galleryUploadStatus" role="status" aria-live="polite"></p>
       </div>
       <div class="preview-list" id="galleryPreview"></div><div class="drive-live-view" style="margin-top:18px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:rgba(0,0,0,.14)"><p class="upload-note" style="padding:0 14px">Drive files · If the list does not load, open the folder directly.</p><iframe title="Shared Google Drive files" src="https://drive.google.com/embeddedfolderview?id=1x2E1Vcv-R2MHxBys05y8uobGPoTo6SFX#grid" style="width:100%;height:440px;border:0;background:#fff" loading="lazy" allow="autoplay"></iframe><p style="padding:0 14px 14px"><a class="cta" href="https://drive.google.com/drive/folders/1x2E1Vcv-R2MHxBys05y8uobGPoTo6SFX?usp=sharing" target="_blank" rel="noopener noreferrer">Open Drive folder / ফোল্ডার খুলুন</a></p></div>
     </section>
@@ -466,6 +468,7 @@
 
     document.getElementById("galleryFiles").addEventListener("change", (event) => {
       const target = document.getElementById("galleryPreview");
+      target.replaceChildren();
       Array.from(event.target.files || []).forEach((file) => {
         const card = document.createElement("div"); card.className = "media-card";
         const media = document.createElement(file.type.startsWith("video/") ? "video" : "img");
@@ -476,7 +479,41 @@
         const caption = document.createElement("p"); caption.className = "upload-note"; caption.textContent = file.name; card.appendChild(caption);
         target.appendChild(card);
       });
-      event.target.value = "";
+    });
+
+    // Upload selected photos/videos to the Apps Script backend; the server checks the Admin PIN.
+    document.getElementById("uploadGalleryFiles").addEventListener("click", async function() {
+      const input = document.getElementById("galleryFiles");
+      const files = Array.from(input.files || []);
+      const status = document.getElementById("galleryUploadStatus");
+      if (!files.length) { status.textContent = currentLanguage === "bn" ? "আগে ছবি বা ভিডিও বেছে নাও।" : "Choose photos or videos first."; return; }
+      if (files.length > 10) { status.textContent = currentLanguage === "bn" ? "একবারে সর্বোচ্চ ১০টি ফাইল Upload করা যাবে।" : "Upload up to 10 files at a time."; return; }
+      const allowed = /^(image\/(jpeg|png|gif|webp)|video\/(mp4|webm|quicktime|ogg))$/i;
+      for (const file of files) {
+        if (!allowed.test(file.type)) { status.textContent = (currentLanguage === "bn" ? "এই ফাইলের ধরন সমর্থিত নয়: " : "Unsupported file type: ") + file.name; return; }
+        if (file.size > 8 * 1024 * 1024) { status.textContent = (currentLanguage === "bn" ? "প্রতি ফাইল ৮ MB-এর কম হতে হবে: " : "Each file must be under 8 MB: ") + file.name; return; }
+      }
+      const pin = window.prompt(currentLanguage === "bn" ? "Apps Script-এর GALLERY_ADMIN_PIN দিন:" : "Enter the Apps Script GALLERY_ADMIN_PIN:");
+      if (!pin) return;
+      const button = this; button.disabled = true; status.textContent = currentLanguage === "bn" ? "Upload হচ্ছে… পেজ বন্ধ কোরো না।" : "Uploading… please keep this page open.";
+      try {
+        const encoded = await Promise.all(files.map(file => new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve({name:file.name,mimeType:file.type,data:String(reader.result).split(",")[1]});
+          reader.onerror = () => reject(new Error("Could not read " + file.name));
+          reader.readAsDataURL(file);
+        })));
+        await fetch(MEMBER_API_URL, {
+          method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain;charset=UTF-8"},
+          body:JSON.stringify({action:"upload",pin:pin,files:encoded})
+        });
+        status.textContent = currentLanguage === "bn"
+          ? "Upload request পাঠানো হয়েছে। কয়েক সেকেন্ড পরে Drive folder খুলে দেখে নাও—no-cors-এর কারণে browser ফলাফল নিশ্চিত করতে পারে না।"
+          : "Upload request sent. Check the Drive folder in a few seconds; the browser cannot confirm the result because no-cors is used.";
+        window.setTimeout(() => { window.open("https://drive.google.com/drive/folders/1SkpALmSmf6ad3rxLuUexJP5YBhH_xFYp?usp=sharing", "_blank", "noopener"); }, 1800);
+      } catch (error) {
+        status.textContent = (currentLanguage === "bn" ? "Upload প্রস্তুত করা যায়নি: " : "Could not prepare upload: ") + error.message;
+      } finally { button.disabled = false; }
     });
   </script>
 </body>
