@@ -304,13 +304,19 @@
 
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // BASIC PIN GATE ONLY: this is not secure authentication on a public GitHub Pages site.
-    // Replace the placeholder below. Anyone can inspect the published JavaScript to find it.
-    const MEMBER_SECRET_PIN = "CHANGE_ME_TO_YOUR_PIN";
+    // Client-side PIN gate: a hash avoids publishing the PIN in plain text,
+    // but this is still NOT secure authentication. Use a backend for private data.
+    const MEMBER_PIN_SHA256 = "PLACEHOLDER_HASH";
     const memberLoginButton = document.getElementById("memberLoginButton");
     const memberLogoutButton = document.getElementById("memberLogoutButton");
     const memberPinInput = document.getElementById("memberPin");
     const memberLoginStatus = document.getElementById("memberLoginStatus");
+
+    async function sha256Hex(value) {
+      const bytes = new TextEncoder().encode(value);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+    }
 
     function setMemberAccess(isLoggedIn) {
       document.body.classList.toggle("member-authenticated", isLoggedIn);
@@ -322,18 +328,25 @@
         : "";
     }
 
-    memberLoginButton.addEventListener("click", () => {
-      if (MEMBER_SECRET_PIN === "CHANGE_ME_TO_YOUR_PIN") {
+    memberLoginButton.addEventListener("click", async () => {
+      if (!window.crypto || !crypto.subtle) {
         memberLoginStatus.textContent = currentLanguage === "bn"
-          ? "প্রথমে index.html-এ CHANGE_ME_TO_YOUR_PIN placeholder বদলাও।"
-          : "First replace CHANGE_ME_TO_YOUR_PIN in index.html.";
+          ? "এই browser-এ PIN যাচাই করা যাচ্ছে না। HTTPS-এ website খুলুন।"
+          : "PIN verification is unavailable in this browser. Open the HTTPS website.";
         return;
       }
-      if (memberPinInput.value === MEMBER_SECRET_PIN) {
-        setMemberAccess(true);
-        memberPinInput.value = "";
-      } else {
-        memberLoginStatus.textContent = currentLanguage === "bn" ? "ভুল PIN। আবার চেষ্টা করুন।" : "Incorrect PIN. Please try again.";
+      memberLoginButton.disabled = true;
+      try {
+        if (await sha256Hex(memberPinInput.value) === MEMBER_PIN_SHA256) {
+          setMemberAccess(true);
+          memberPinInput.value = "";
+        } else {
+          memberLoginStatus.textContent = currentLanguage === "bn" ? "ভুল PIN। আবার চেষ্টা করুন।" : "Incorrect PIN. Please try again.";
+        }
+      } catch (error) {
+        memberLoginStatus.textContent = currentLanguage === "bn" ? "PIN যাচাই করা যায়নি। আবার চেষ্টা করুন।" : "Could not verify PIN. Please try again.";
+      } finally {
+        memberLoginButton.disabled = false;
       }
     });
 
