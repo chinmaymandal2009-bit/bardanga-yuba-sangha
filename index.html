@@ -3,49 +3,198 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bardanga Yuba Sangha</title>
+  <meta name="theme-color" content="#1b0914">
+  <meta name="description" content="Bardanga Yuba Sangha — ঐতিহ্য, সেবা ও তারুণ্যের মিলনস্থল.">
+  <title>Bardanga Yuba Sangha | বারডাঙ্গা যুব সংঘ</title>
   <style>
-    :root { --gold:#ffd36a; --night:#09031c; }
-    * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; color:#fff; font-family:Arial, sans-serif; background:radial-gradient(circle at 20% 15%,#5c126c 0,transparent 28%),radial-gradient(circle at 80% 20%,#b23b62 0,transparent 22%),linear-gradient(145deg,var(--night),#19052f 55%,#05020e); }
-    main { max-width:1040px; margin:auto; padding:72px 24px; text-align:center; }
-    .badge { color:var(--gold); letter-spacing:.14em; font-size:.8rem; font-weight:bold; }
-    h1 { margin:18px 0 10px; font-size:clamp(2.8rem,9vw,6.4rem); line-height:.92; text-transform:uppercase; text-shadow:0 0 28px #ff4fa080; }
-    h1 span, h2 { color:var(--gold); }
-    .subtitle { font-size:clamp(1rem,2.4vw,1.35rem); color:#f6dcea; max-width:680px; margin:24px auto 34px; line-height:1.7; }
-    .button { display:inline-block; padding:14px 24px; border-radius:999px; color:#1d0924; background:var(--gold); text-decoration:none; font-weight:bold; }
-    section { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:64px; text-align:left; }
-    article { padding:22px; border:1px solid #ffffff24; border-radius:18px; background:#ffffff0d; backdrop-filter:blur(8px); }
-    article h2 { font-size:1.1rem; margin:0 0 10px; }
-    article p { color:#eadbed; line-height:1.6; margin:0; }
-    .about { margin:52px auto 0; max-width:760px; padding:28px; border:1px solid #ffffff24; border-radius:18px; background:#ffffff0d; text-align:left; }
-    .about h2 { margin-top:0; }
-    .facts { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-    .facts strong { display:block; color:var(--gold); margin-bottom:6px; }
-    footer { margin-top:58px; color:#c9aeca; font-size:.9rem; }
-    @media (max-width:700px) { section, .facts { grid-template-columns:1fr; } }
+    :root {
+      color-scheme: dark;
+      --gold: #f3ca75;
+      --gold-light: #ffe8ae;
+      --night: #130810;
+      --wine: #32101f;
+      --panel: rgba(58, 23, 39, .72);
+      --cream: #fff5e7;
+      --muted: #e1cbd4;
+      --line: rgba(243, 202, 117, .3);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--cream);
+      font-family: system-ui, "Noto Sans Bengali", "Nirmala UI", sans-serif;
+      background:
+        radial-gradient(ellipse at 12% 10%, rgba(130, 32, 66, .35), transparent 34%),
+        radial-gradient(ellipse at 88% 28%, rgba(175, 108, 38, .16), transparent 30%),
+        linear-gradient(145deg, #10070e, #28101d 52%, #10070e);
+    }
+    a { color: inherit; }
+    .topline { height: 3px; background: linear-gradient(90deg, transparent, var(--gold), #fff0c2, var(--gold), transparent); }
+    header {
+      position: sticky; top: 0; z-index: 10; display: flex; align-items: center;
+      justify-content: space-between; gap: 16px; padding: 14px clamp(16px, 5vw, 64px);
+      background: rgba(19, 8, 16, .92); border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .mini-logo {
+      width: 46px; height: 46px; flex: 0 0 46px; display: grid; place-items: center;
+      border: 1px solid var(--gold); border-radius: 50%; color: var(--gold);
+      box-shadow: 0 0 20px rgba(243, 202, 117, .15); font-size: 24px;
+    }
+    .brand-name { color: var(--gold); font-size: clamp(.76rem, 2vw, 1rem); font-weight: 850; letter-spacing: .06em; }
+    .brand-sub { margin-top: 3px; color: var(--muted); font-size: .84rem; }
+    .lang-btn {
+      border: 1px solid var(--gold); border-radius: 999px; padding: 10px 15px;
+      color: var(--gold-light); background: transparent; font: inherit; font-weight: 700; cursor: pointer;
+    }
+    .lang-btn:hover, .lang-btn:focus-visible { color: var(--night); background: var(--gold); outline: none; }
+    nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 24px; padding: 13px 16px; background: rgba(42, 15, 29, .88); border-bottom: 1px solid rgba(255,255,255,.06); }
+    nav a { text-decoration: none; color: var(--muted); font-size: .92rem; }
+    nav a:hover, nav a:focus-visible { color: var(--gold); }
+    .hero {
+      position: relative; isolation: isolate; overflow: hidden; min-height: 510px;
+      display: grid; place-items: center; text-align: center; padding: 88px 20px 76px;
+      background:
+        radial-gradient(ellipse at 50% 105%, rgba(181, 91, 44, .35), transparent 45%),
+        radial-gradient(ellipse at 8% 10%, rgba(183, 49, 85, .24), transparent 40%),
+        linear-gradient(135deg, rgba(24,8,18,.55), rgba(68,17,40,.65), rgba(18,7,15,.8));
+    }
+    .hero::before, .hero::after { content: "✦   ·   ✧   ·   ✦   ·   ✧   ·   ✦"; position: absolute; z-index: -1; color: var(--gold); letter-spacing: clamp(5px, 2vw, 15px); white-space: nowrap; animation: twinkle 3.5s ease-in-out infinite alternate; }
+    .hero::before { top: 28px; left: 0; right: 0; font-size: clamp(12px, 2vw, 20px); }
+    .hero::after { bottom: 26px; left: 0; right: 0; font-size: 13px; opacity: .55; animation-delay: 1s; }
+    .hero-inner { max-width: 920px; }
+    .emblem {
+      width: 92px; height: 92px; display: grid; place-items: center; margin: 0 auto 22px;
+      border: 1.5px solid var(--gold); border-radius: 50%; color: var(--gold-light); font-size: 43px;
+      background: radial-gradient(circle, rgba(243,202,117,.12), transparent 72%);
+      box-shadow: 0 0 16px rgba(243,202,117,.18), inset 0 0 18px rgba(243,202,117,.08);
+    }
+    .eyebrow { color: var(--gold); font-size: .78rem; font-weight: 800; letter-spacing: .22em; }
+    h1 { margin: 19px 0 14px; color: var(--gold-light); font-size: clamp(2.35rem, 8vw, 5.7rem); line-height: 1.04; letter-spacing: -.035em; text-shadow: 0 0 35px rgba(243,202,117,.14); }
+    h1 span { color: var(--gold); }
+    .subtitle { max-width: 720px; margin: 22px auto 28px; color: var(--muted); font-size: clamp(1rem, 2.4vw, 1.28rem); line-height: 1.9; }
+    .cta { display: inline-block; padding: 13px 22px; border-radius: 999px; color: #25100d; background: linear-gradient(135deg, #ffe8ae, #d9a642); text-decoration: none; font-weight: 800; box-shadow: 0 8px 32px rgba(217,166,66,.17); }
+    .cta:hover { transform: translateY(-2px); }
+    main { max-width: 1120px; margin: auto; padding: 46px 20px 58px; }
+    .section-head { text-align: center; margin: 0 auto 25px; }
+    .section-head h2, .about h2 { color: var(--gold); font-size: clamp(1.5rem, 4vw, 2rem); margin: 0 0 10px; }
+    .section-head p { color: var(--muted); margin: 0; line-height: 1.8; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+    .card, .about {
+      padding: 24px; border: 1px solid var(--line); border-radius: 18px;
+      background: linear-gradient(145deg, rgba(70, 28, 47, .72), rgba(30, 13, 23, .8));
+      box-shadow: 0 12px 34px rgba(0,0,0,.12);
+    }
+    .symbol { font-size: 29px; margin-bottom: 12px; }
+    .card h3 { margin: 0 0 10px; color: var(--gold-light); font-size: 1.12rem; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.8; font-size: .95rem; }
+    .about { margin-top: 22px; }
+    .about > p { color: var(--muted); line-height: 1.9; }
+    .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; margin-top: 22px; }
+    .fact { padding: 17px; border-radius: 12px; background: rgba(0,0,0,.17); color: var(--cream); line-height: 1.8; overflow-wrap: anywhere; }
+    .fact strong { display: block; color: var(--gold); margin-bottom: 6px; }
+    footer { text-align: center; padding: 28px 18px 34px; color: var(--muted); border-top: 1px solid var(--line); font-size: .9rem; line-height: 2; }
+    footer strong { color: var(--gold); letter-spacing: .08em; }
+    @keyframes twinkle { from { opacity: .35; } to { opacity: .95; } }
+    @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } .facts { grid-template-columns: 1fr; } .hero { min-height: 470px; } }
+    @media (max-width: 440px) { header { padding: 12px; gap: 8px; } .mini-logo { width: 39px; height: 39px; flex-basis: 39px; } .brand-sub { font-size: .76rem; } .lang-btn { padding: 9px 11px; } nav { gap: 11px 16px; } main { padding-inline: 14px; } .card, .about { padding: 20px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; transition: none !important; } }
   </style>
 </head>
 <body>
+  <div class="topline" aria-hidden="true"></div>
+  <header>
+    <div class="brand">
+      <div class="mini-logo" aria-hidden="true">✦</div>
+      <div>
+        <div class="brand-name">BARDANGA YUBA SANGHA</div>
+        <div class="brand-sub">বারডাঙ্গা যুব সংঘ</div>
+      </div>
+    </div>
+    <button class="lang-btn" id="languageButton" type="button" aria-label="Switch language">English</button>
+  </header>
+
+  <nav aria-label="Main navigation">
+    <a href="#home" data-bn="হোম" data-en="Home">হোম</a>
+    <a href="#about" data-bn="আমাদের পরিচয়" data-en="About Us">আমাদের পরিচয়</a>
+    <a href="#activities" data-bn="আমাদের উদ্যোগ" data-en="Our Initiatives">আমাদের উদ্যোগ</a>
+    <a href="#community" data-bn="সংস্কৃতি ও সমাজ" data-en="Culture & Community">সংস্কৃতি ও সমাজ</a>
+    <a href="#contact" data-bn="যোগাযোগ" data-en="Contact">যোগাযোগ</a>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-inner">
+      <div class="emblem" aria-label="Decorative club emblem">✦</div>
+      <div class="eyebrow" data-bn="ঐক্য • সম্প্রীতি • সেবা" data-en="UNITY • HARMONY • SERVICE">ঐক্য • সম্প্রীতি • সেবা</div>
+      <h1>Bardanga<br><span>Yuba Sangha</span></h1>
+      <p class="subtitle" data-bn="ঐতিহ্য, সেবা ও তারুণ্যের মিলনস্থল।" data-en="A meeting place for tradition, service and youth.">ঐতিহ্য, সেবা ও তারুণ্যের মিলনস্থল।<br>Celebrating community, culture and a brighter tomorrow.</p>
+      <a class="cta" href="#about" data-bn="আমাদের সম্পর্কে জানুন" data-en="Discover Our Club">আমাদের সম্পর্কে জানুন</a>
+    </div>
+  </section>
+
   <main>
-    <div class="badge">BARDANGA • WEST BENGAL</div>
-    <h1>Bardanga<br><span>Yuba Sangha</span></h1>
-    <p class="subtitle">ঐতিহ্য, সেবা ও তারুণ্যের মিলনস্থল।<br>Celebrating community, culture and a brighter tomorrow.</p>
-    <a class="button" href="#about">আমাদের সম্পর্কে / Discover Us</a>
-    <section>
-      <article><h2>আমাদের উদ্যোগ</h2><p>সাংস্কৃতিক অনুষ্ঠান, সামাজিক সেবা এবং সকলের জন্য আনন্দময় আয়োজন।</p></article>
-      <article><h2>Culture & Community</h2><p>We bring neighbours together through festivals, sport and creative programmes.</p></article>
-      <article><h2>যোগ দিন</h2><p>আমাদের আসন্ন অনুষ্ঠান ও সদস্যতার তথ্য খুব শিগগিরই এখানে পাওয়া যাবে।</p></article>
-    </section>
-    <section class="about" id="about">
-      <h2>আমাদের পরিচয়</h2>
-      <div class="facts">
-        <div><strong>প্রতিষ্ঠিত</strong>১৯৮৯</div>
-        <div><strong>ঠিকানা</strong>বারডাঙ্গা, সালাইতোলা, গাজোল, মালদা</div>
-        <div><strong>রেজিস্ট্রেশন নং</strong>B/2L No. 27192 of 2014–2015</div>
+    <section id="activities">
+      <div class="section-head">
+        <h2 data-bn="আমাদের উদ্যোগ" data-en="Our Initiatives">আমাদের উদ্যোগ</h2>
+        <p data-bn="সংস্কৃতি, সমাজসেবা এবং একসঙ্গে এগিয়ে চলার প্রয়াস।" data-en="Culture, community service and moving forward together.">সংস্কৃতি, সমাজসেবা এবং একসঙ্গে এগিয়ে চলার প্রয়াস।</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="symbol" aria-hidden="true">🪔</div>
+          <h3 data-bn="সাংস্কৃতিক অনুষ্ঠান" data-en="Cultural Celebrations">সাংস্কৃতিক অনুষ্ঠান</h3>
+          <p data-bn="আমাদের ঐতিহ্য, উৎসব এবং সাংস্কৃতিক আয়োজনকে একসঙ্গে উদযাপন করি।" data-en="Celebrating our shared traditions, festivals and cultural programmes.">আমাদের ঐতিহ্য, উৎসব এবং সাংস্কৃতিক আয়োজনকে একসঙ্গে উদযাপন করি।</p>
+        </article>
+        <article class="card" id="community">
+          <div class="symbol" aria-hidden="true">🤝</div>
+          <h3 data-bn="সংস্কৃতি ও সমাজ" data-en="Culture & Community">সংস্কৃতি ও সমাজ</h3>
+          <p data-bn="উৎসব, খেলাধুলা এবং সৃজনশীল কর্মসূচির মাধ্যমে প্রতিবেশীদের কাছাকাছি আনি।" data-en="Bringing neighbours together through festivals, sports and creative programmes.">উৎসব, খেলাধুলা এবং সৃজনশীল কর্মসূচির মাধ্যমে প্রতিবেশীদের কাছাকাছি আনি।</p>
+        </article>
+        <article class="card">
+          <div class="symbol" aria-hidden="true">🌟</div>
+          <h3 data-bn="যোগ দিন" data-en="Get Involved">যোগ দিন</h3>
+          <p data-bn="আসন্ন অনুষ্ঠান ও সদস্যতার তথ্য খুব শিগগিরই এখানে পাওয়া যাবে।" data-en="Information about upcoming events and membership will be shared here soon.">আসন্ন অনুষ্ঠান ও সদস্যতার তথ্য খুব শিগগিরই এখানে পাওয়া যাবে।</p>
+        </article>
       </div>
     </section>
-    <footer>© 2026 Bardanga Yuba Sangha · Built with community spirit</footer>
+
+    <section class="about" id="about">
+      <h2 data-bn="আমাদের পরিচয়" data-en="About Our Club">আমাদের পরিচয়</h2>
+      <p data-bn="বারডাঙ্গা যুব সংঘের এই ডিজিটাল পরিচিতিতে ক্লাবের ঐতিহ্য, উদ্যোগ এবং স্থানীয় সমাজের সঙ্গে আমাদের সংযোগ তুলে ধরা হবে।" data-en="This digital home for Bardanga Yuba Sangha highlights the club's heritage, initiatives and connection with the local community.">বারডাঙ্গা যুব সংঘের এই ডিজিটাল পরিচিতিতে ক্লাবের ঐতিহ্য, উদ্যোগ এবং স্থানীয় সমাজের সঙ্গে আমাদের সংযোগ তুলে ধরা হবে।</p>
+      <div class="facts">
+        <div class="fact"><strong data-bn="প্রতিষ্ঠিত" data-en="Established">প্রতিষ্ঠিত</strong><span>১৯৮৯</span></div>
+        <div class="fact"><strong data-bn="ঠিকানা" data-en="Address">ঠিকানা</strong><span data-bn="বারডাঙ্গা, সালাইতোলা, গাজোল, মালদা" data-en="Bardanga, Salaitola, Gazole, Malda">বারডাঙ্গা, সালাইতোলা, গাজোল, মালদা</span></div>
+        <div class="fact"><strong data-bn="রেজিস্ট্রেশন নং" data-en="Registration No.">রেজিস্ট্রেশন নং</strong><span>B/2L No. 27192 of 2014–2015</span></div>
+      </div>
+    </section>
   </main>
+
+  <footer id="contact">
+    <strong>BARDANGA YUBA SANGHA</strong><br>
+    <span data-bn="বারডাঙ্গা যুব সংঘ" data-en="Bardanga Youth Association">বারডাঙ্গা যুব সংঘ</span><br>
+    <span data-bn="ঐক্য • সম্প্রীতি • সেবা" data-en="Unity • Harmony • Service">ঐক্য • সম্প্রীতি • সেবা</span><br>
+    © <span id="year"></span> Bardanga Yuba Sangha · <span data-bn="সমাজের শক্তিতে গড়া" data-en="Built with community spirit">সমাজের শক্তিতে গড়া</span>
+  </footer>
+
+  <script>
+    const languageButton = document.getElementById("languageButton");
+    let currentLanguage = "bn";
+
+    function setLanguage(language) {
+      currentLanguage = language;
+      document.documentElement.lang = language;
+      document.querySelectorAll("[data-bn][data-en]").forEach((element) => {
+        element.textContent = element.dataset[language];
+      });
+      languageButton.textContent = language === "bn" ? "English" : "বাংলা";
+      languageButton.setAttribute("aria-label", language === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন");
+    }
+
+    languageButton.addEventListener("click", () => {
+      setLanguage(currentLanguage === "bn" ? "en" : "bn");
+    });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
